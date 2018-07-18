@@ -3,11 +3,6 @@
 /**
  * The plugin bootstrap file
  *
- * This file is read by WordPress to generate the plugin information in the plugin
- * admin area. This file also includes all of the dependencies used by the plugin,
- * registers the activation and deactivation functions, and defines a function
- * that starts the plugin.
- *
  * @link              https://www.elevenwinds.com/
  * @since             1.0.0
  * @package           Xby2
@@ -15,7 +10,7 @@
  * @wordpress-plugin
  * Plugin Name:       xby2
  * Plugin URI:        https://www.elevenwinds.com/
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description:       A plugin to handle the creation of custom post types and REST endpoints for use by the xby2 website.
  * Version:           1.0.0
  * Author:            ElevenWinds
  * Author URI:        https://www.elevenwinds.com/

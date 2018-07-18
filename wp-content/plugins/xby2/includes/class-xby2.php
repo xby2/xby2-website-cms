@@ -88,7 +88,6 @@ class Xby2 {
 	 * - Xby2_Loader. Orchestrates the hooks of the plugin.
 	 * - Xby2_i18n. Defines internationalization functionality.
 	 * - Xby2_Admin. Defines all hooks for the admin area.
-	 * - Xby2_Public. Defines all hooks for the public side of the site.
 	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
@@ -147,8 +146,6 @@ class Xby2 {
 
 		$plugin_admin = new Xby2_Admin( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
         $this->loader->add_action( 'init',                  $plugin_admin, 'init_classes');
         $this->loader->add_action( 'wp_insert_post',        $plugin_admin, 'set_custom_fields');
 
