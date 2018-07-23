@@ -63,7 +63,7 @@ class ClientStory extends Xby2BaseModel {
 		add_post_meta($post_id, 'description',                '', true);
 		add_post_meta($post_id, 'industry',                   '', true);
 		add_post_meta($post_id, 'client',                     '', true);
-		add_post_meta($post_id, 'services',                   '', true);
+		add_post_meta($post_id, 'expertises',                 '', true);
         add_post_meta($post_id, 'isFeatured',                 '', true);
         add_post_meta($post_id, 'nextClientStoryId',          '', true);
         add_post_meta($post_id, 'nextClientStoryTitle',       '', true);
