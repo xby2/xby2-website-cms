@@ -15,7 +15,7 @@ class Perk extends Xby2BaseModel {
         // Get the data we need from the post
         $this->id = $post->ID;
         $this->title = $post->post_title;
-        $this->description = strip_tags(apply_filters('the_content', $post->post_content));
+        $this->description = strip_tags($post->post_content);
 
         // Get the data we need from our custom fields
         foreach ($post->meta as $key=>$value) {
