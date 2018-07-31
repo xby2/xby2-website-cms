@@ -146,9 +146,10 @@ class Xby2 {
 
 		$plugin_admin = new Xby2_Admin( $this->get_plugin_name(), $this->get_version() );
 
-        $this->loader->add_action( 'init',                  $plugin_admin, 'init_classes');
-        $this->loader->add_action( 'wp_insert_post',        $plugin_admin, 'set_custom_fields');
-
+		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
+		$this->loader->add_action( 'init',           		$plugin_admin, 'init_classes');
+		$this->loader->add_action( 'wp_insert_post', 		$plugin_admin, 'set_custom_fields');
+		$this->loader->add_action( 'admin_menu',     		$plugin_admin, 'remove_admin_menu_items');
 	}
 
 	/**

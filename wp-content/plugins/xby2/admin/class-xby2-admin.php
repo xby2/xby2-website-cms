@@ -156,4 +156,10 @@ class Xby2_Admin {
         }
 	}
 
+	public function remove_admin_menu_items(){
+		remove_menu_page( 'edit.php' );                   //Posts
+		remove_menu_page( 'edit.php?post_type=page' );    //Pages
+		remove_menu_page( 'edit-comments.php' );          //Comments
+	}
+
 }
