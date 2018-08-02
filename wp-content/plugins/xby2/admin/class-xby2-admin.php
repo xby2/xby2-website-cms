@@ -11,6 +11,7 @@ require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/Models/Perk.php'
 require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/Models/CompanyValue.php';
 require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/Models/Location.php';
 require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/Models/MindShare.php';
+require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/Models/Author.php';
 
 /**
  * The admin-specific functionality of the plugin.
@@ -119,6 +120,7 @@ class Xby2_Admin {
 	public function init_classes(){
 
 	    // Register custom types
+	    Author                  ::registerTypeAndRoutes();
 		ClientStory             ::registerTypeAndRoutes();
 		Industry                ::registerTypeAndRoutes();
 		RecruitingValue         ::registerTypeAndRoutes();
@@ -153,6 +155,7 @@ class Xby2_Admin {
             case 'recruitingvalue' :RecruitingValue::registerMeta($post_id);         break;
             case 'industry'        :Industry::registerMeta($post_id);                break;
             case 'mindshare'       :MindShare::registerMeta($post_id);               break;
+            case 'author'		   :Author::registerMeta($post_id);					 break;
         }
 	}
 
