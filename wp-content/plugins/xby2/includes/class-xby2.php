@@ -150,6 +150,7 @@ class Xby2 {
 		$this->loader->add_action( 'init',           		$plugin_admin, 'init_classes');
 		$this->loader->add_action( 'wp_insert_post', 		$plugin_admin, 'set_custom_fields');
 		$this->loader->add_action( 'admin_menu',     		$plugin_admin, 'remove_admin_menu_items');
+        $this->loader->add_action( 'upload_mimes',     		$plugin_admin, 'allow_svg_uploads');
 	}
 
 	/**

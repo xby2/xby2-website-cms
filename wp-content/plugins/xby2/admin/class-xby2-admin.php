@@ -159,10 +159,27 @@ class Xby2_Admin {
         }
 	}
 
+    /**
+     * 'admin_menu' hook callback
+     * Remove menu items
+     */
 	public function remove_admin_menu_items(){
-		remove_menu_page( 'edit.php' );                   //Posts
-		remove_menu_page( 'edit.php?post_type=page' );    //Pages
-		remove_menu_page( 'edit-comments.php' );          //Comments
+		remove_menu_page( 'edit.php' );                //Posts
+		remove_menu_page( 'edit.php?post_type=page' ); //Pages
+		remove_menu_page( 'edit-comments.php' );       //Comments
 	}
+
+    /**
+     * 'upload_mimes' hook callback
+     * Allow SVG uploads
+     *
+     * @param $allowed_mimes
+     * @return array
+     */
+	public function allow_svg_uploads( $allowed_mimes ){
+        $allowed_mimes['svg'] = 'image/svg+xml';
+        $allowed_mimes['svgz'] = 'image/svg+xml';
+        return $allowed_mimes;
+    }
 
 }
