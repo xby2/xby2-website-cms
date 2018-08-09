@@ -7,6 +7,7 @@ Class MindShare extends Xby2BaseModel {
 
     public $id;
     public $title;
+    public $authorId;
     public $authorName;
     public $authorTitle;
     public $authorImageUrl;
@@ -20,6 +21,7 @@ Class MindShare extends Xby2BaseModel {
     public $content;
     public $tags;
     public $nextMindShareId;
+    public $nextMindShareTitle;
 
     public function __construct($post) {
 
@@ -39,6 +41,29 @@ Class MindShare extends Xby2BaseModel {
             if ( property_exists ( $this , $key ) ) {
                 if ($key == "isFeatured") {
                     $this->$key = filter_var($value[0], FILTER_VALIDATE_BOOLEAN);
+                // Populate the "nextMindShare______" fields based on the given post ID
+                } else if ($key == "authorId") {
+                    $authorPost = get_post($value[0]);
+                    if ($authorPost) {
+                        $meta = get_post_meta($authorPost->ID);
+                        $authorPost->meta = $meta;
+                        $Author = new Author($authorPost);
+                        $this->authorId = $authorPost->ID;
+                        $this->authorImageUrl = $Author->imageUrl;
+                        $this->authorName = $Author->name;
+                        $this->authorTitle = $Author->title;
+                    }
+                } else if ($key == "nextMindShareId") {
+                    $mindSharePost = get_post($value[0]);
+                    if ($mindSharePost) {
+                        $this->nextMindShareId = $value[0];
+                        $this->nextMindShareTitle = $mindSharePost->post_title;
+                    }
+                } else if ($key == "industry") {
+                    $industryPost = get_post($value[0]);
+                    if ($industryPost) {
+                        $this->industry = $industryPost->post_title;
+                    }
                 } else {
                     $this->$key = $value[0];
                 }
@@ -68,9 +93,7 @@ Class MindShare extends Xby2BaseModel {
 
     // Add all custom post meta fields when creating a new post of this type
     public static function registerMeta ($post_id) {
-        add_post_meta($post_id, 'authorName',        '', true);
-        add_post_meta($post_id, 'authorTitle',       '', true);
-        add_post_meta($post_id, 'authorImageUrl',    '', true);
+        add_post_meta($post_id, 'authorId',          '', true);
         add_post_meta($post_id, 'shortDescription',  '', true);
         add_post_meta($post_id, 'isFeatured',        '', true);
         add_post_meta($post_id, 'industry',          '', true);
