@@ -2,6 +2,7 @@
 
 require_once plugin_dir_path( dirname( __FILE__ ) ) . '/Controllers/AuthorController.php';
 require_once plugin_dir_path( dirname( __FILE__ ) ) . '/Models/Xby2BaseModel.php';
+require_once plugin_dir_path( dirname( __FILE__ ) ) . '/Views/Xby2BaseView.php';
 
 class Author extends Xby2BaseModel {
 
@@ -31,7 +32,7 @@ class Author extends Xby2BaseModel {
             'plural_name'   => 'Authors',
             'singular_name' => 'Author',
             'dashicon'      => 'dashicons-businessman',
-            'supports'      => array( 'title', 'custom-fields' ),
+            'supports'      => array( 'title' ),
             'post_type'     => 'author'
         );
 
@@ -41,9 +42,29 @@ class Author extends Xby2BaseModel {
 		$controller->register_routes();
 	}
 
-    // Add all custom post meta fields when creating a new post of this type
-	public static function registerMeta($post_id) {
-		add_post_meta($post_id, 'imageUrl', '', true);
-        add_post_meta($post_id, 'title',    '', true);
-	}
+    // Register the meta box to add to the Post edit page, and define the html callback
+	public static function add_meta_box() {
+        add_meta_box(
+            'author_meta',              // Unique ID
+            'Properties',               // Box title
+            [self::class, 'meta_html'], // Content callback, must be of type callable
+            "author"                    // Post type
+        );
+    }
+
+    // Callback to display the HTML for this meta box
+    function meta_html($post)
+    {
+        $view = new Xby2BaseView(get_post_meta($post->ID));
+        $view->addInput('text', 'author-image-url', 'Author Image Url: ', 'imageUrl', 'large-text');
+        $view->addInput('text', 'author-title',     'Author Title: ',     'title',    'regular-text');
+        $view->displayForm();
+    }
+
+    // Callback function to save the metadata when saving/updating the post
+    public static function save_meta_data($post_id)
+    {
+        $standardMetaValues  = array("imageUrl", "title");
+        parent::save_standard_meta_values($standardMetaValues, $post_id);
+    }
 }

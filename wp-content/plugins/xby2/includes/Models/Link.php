@@ -31,7 +31,7 @@ class Link extends Xby2BaseModel {
             'plural_name'   => 'Links',
             'singular_name' => 'Link',
             'dashicon'      => 'dashicons-paperclip',
-            'supports'      => array( 'title', 'custom-fields' ),
+            'supports'      => array( 'title' ),
             'post_type'     => 'link'
         );
 
@@ -41,10 +41,30 @@ class Link extends Xby2BaseModel {
 		$controller->register_routes();
 	}
 
-    // Add all custom post meta fields when creating a new post of this type
-	public static function registerMeta($post_id) {
-		add_post_meta($post_id, 'label', '', true);
-		add_post_meta($post_id, 'link',  '', true);
-        add_post_meta($post_id, 'priority',  '', true);
-	}
+    // Register the meta box to add to the Post edit page, and define the html callback
+    public static function add_meta_box() {
+        add_meta_box(
+            'link_meta',                 // Unique ID
+            'Properties',                // Box title
+            [self::class, 'meta_html'],  // Content callback, must be of type callable
+            "link"                       // Post type
+        );
+    }
+
+    // Callback to display the HTML for this meta box
+    function meta_html($post)
+    {
+        $view = new Xby2BaseView(get_post_meta($post->ID));
+        $view->addInput('text', 'link-label',    'Label: ',    'label',    'regular-text');
+        $view->addInput('text', 'link-link',     'Link: ',     'link',     'large-text');
+        $view->addInput('text', 'link-priority', 'Priority: ', 'priority', 'regular-text');
+        $view->displayForm();
+    }
+
+    // Callback function to save the metadata when saving/updating the post
+    public static function save_meta_data($post_id)
+    {
+        $standardMetaValues = array("label", "link", "priority");
+        parent::save_standard_meta_values($standardMetaValues, $post_id);
+    }
 }

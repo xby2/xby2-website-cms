@@ -79,7 +79,7 @@ Class MindShare extends Xby2BaseModel {
             'plural_name'   => 'Mind Shares',
             'singular_name' => 'Mind Share',
             'dashicon'      => 'dashicons-format-chat',
-            'supports'      => array( 'title', 'editor', 'custom-fields' ),
+            'supports'      => array( 'title', 'editor'),
             'post_type'     => 'mindshare'
         );
 
@@ -91,16 +91,48 @@ Class MindShare extends Xby2BaseModel {
         $controller->register_routes();
     }
 
-    // Add all custom post meta fields when creating a new post of this type
-    public static function registerMeta ($post_id) {
-        add_post_meta($post_id, 'authorId',          '', true);
-        add_post_meta($post_id, 'shortDescription',  '', true);
-        add_post_meta($post_id, 'isFeatured',        '', true);
-        add_post_meta($post_id, 'industry',          '', true);
-        add_post_meta($post_id, 'publishDate',       '', true);
-        add_post_meta($post_id, 'readTimeInMinutes', '', true);
-        add_post_meta($post_id, 'publishUrl',        '', true);
-        add_post_meta($post_id, 'publishName',       '', true);
-        add_post_meta($post_id, 'nextMindShareId',   '', true);
+    // Register the meta box to add to the Post edit page, and define the html callback
+    public static function add_meta_box() {
+        add_meta_box(
+            'mindshare_meta',           // Unique ID
+            'Properties',               // Box title
+            [self::class, 'meta_html'], // Content callback, must be of type callable
+            "mindshare"                 // Post type
+        );
+    }
+
+    // Callback to display the HTML for this meta box
+    function meta_html($post)
+    {
+        $view = new Xby2BaseView(get_post_meta($post->ID));
+
+        $authors    = get_posts(['post_type' => 'author', 'numberposts' => -1]);
+        $industries = get_posts(['post_type' => 'industry', 'numberposts' => -1]);
+        $mindShares = get_posts(['post_type' => 'mindshare', 'numberposts' => -1]);
+
+        $view->addInput('dropdown', 'mind-share-author',       'Author: ',                  'authorId',          'regular-text', $authors);
+        $view->addInput('dropdown', 'mind-share-industry',     'Industry: ',                'industry',          'regular-text', $industries);
+        $view->addInput('dropdown', 'mind-share-mindshare',    'Next Mind Share: ',         'nextMindShareId',   'regular-text', $mindShares);
+        $view->addInput('checkbox', 'mind-share-featured',     'Featured (Y/N): ',          'isFeatured',        '');
+        $view->addInput('text',     'mind-share-publish-date', 'Publish Date (MM/DD/YYYY)', 'publishDate',       'regular-text');
+        $view->addInput('text',     'mind-share-publish-name', 'Publish Name',              'publishName',       'regular-text');
+        $view->addInput('text',     'mind-share-publish-url',  'Publish Url',               'publishUrl',        'regular-text');
+        $view->addInput('text',     'mind-share-read-time',    'Read Time (Minutes)',       'readTimeInMinutes', 'regular-text');
+        $view->addInput('text',     'mind-share-description',  'Short Description',         'shortDescription',  'large-text', [], true);
+
+        $view->displayForm();
+    }
+
+    // Callback function to save the metadata when saving/updating the post
+    public static function save_meta_data($post_id) {
+        $standardMetaValues = array("authorId", "industry", "nextMindShareId", "publishDate", "publishName", "publishUrl", "readTimeInMinutes", "shortDescription");
+        parent::save_standard_meta_values($standardMetaValues, $post_id);
+
+        // Update Checkbox value
+        update_post_meta(
+            $post_id,
+            'isFeatured',
+            (array_key_exists('isFeatured', $_POST)) ? TRUE : FALSE
+        );
     }
 }

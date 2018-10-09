@@ -134,30 +134,46 @@ class Xby2_Admin {
 	}
 
     /**
-     * 'wp_insert_post' hook callback
-     * Register the custom meta fields
+     * 'add_meta_boxes' hook callback
+     * Register the custom meta box for the post type
      *
-     * @param $post_id
+     * @param $post_type
      */
-	public function set_custom_fields($post_id){
-
-	    $post = get_post($post_id);
+	public function set_custom_fields($post_type){
 
 	    // When creating a new Post, register the meta fields
-	    switch ($post->post_type) {
-            case 'clientstory'     :ClientStory::registerMeta($post_id);             break;
-            case 'service'         :Service::registerMeta($post_id);                 break;
-            case 'faq'             :FrequentlyAskedQuestion::registerMeta($post_id); break;
-            case 'link'            :Link::registerMeta($post_id);                    break;
-            case 'perk'            :Perk::registerMeta($post_id);                    break;
-            case 'companyvalue'    :CompanyValue::registerMeta($post_id);            break;
-            case 'location'        :Location::registerMeta($post_id);                break;
-            case 'recruitingvalue' :RecruitingValue::registerMeta($post_id);         break;
-            case 'industry'        :Industry::registerMeta($post_id);                break;
-            case 'mindshare'       :MindShare::registerMeta($post_id);               break;
-            case 'author'		   :Author::registerMeta($post_id);					 break;
+	    switch ($post_type) {
+            case 'clientstory'     :ClientStory::add_meta_box();             break;
+            case 'service'         :Service::add_meta_box();                 break;
+            case 'faq'             :FrequentlyAskedQuestion::add_meta_box(); break;
+            case 'link'            :Link::add_meta_box();                    break;
+            case 'perk'            :Perk::add_meta_box();                    break;
+            case 'companyvalue'    :CompanyValue::add_meta_box();            break;
+            case 'location'        :Location::add_meta_box();                break;
+            case 'mindshare'       :MindShare::add_meta_box();               break;
+            case 'author'		   :Author::add_meta_box();					 break;
         }
 	}
+
+    /**
+     *
+     * @param int $post_id
+     * @param $post
+     */
+    public function save_post_meta($post_id, $post) {
+
+        switch ($post->post_type) {
+            case 'clientstory'     :ClientStory::save_meta_data($post_id);             break;
+            case 'service'         :Service::save_meta_data($post_id);                 break;
+            case 'faq'             :FrequentlyAskedQuestion::save_meta_data($post_id); break;
+            case 'link'            :Link::save_meta_data($post_id);                    break;
+            case 'perk'            :Perk::save_meta_data($post_id);                    break;
+            case 'companyvalue'    :CompanyValue::save_meta_data($post_id);            break;
+            case 'location'        :Location::save_meta_data($post_id);                break;
+            case 'mindshare'       :MindShare::save_meta_data($post_id);               break;
+            case 'author'		   :Author::save_meta_data($post_id);                  break;
+        }
+    }
 
     /**
      * 'admin_menu' hook callback

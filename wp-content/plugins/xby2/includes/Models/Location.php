@@ -41,7 +41,7 @@ class Location extends Xby2BaseModel {
             'plural_name'   => 'Locations',
             'singular_name' => 'Location',
             'dashicon'      => 'dashicons-location',
-            'supports'      => array( 'title', 'custom-fields' ),
+            'supports'      => array( 'title' ),
             'post_type'     => 'location'
         );
 
@@ -51,15 +51,36 @@ class Location extends Xby2BaseModel {
 		$controller->register_routes();
 	}
 
-    // Add all custom post meta fields when creating a new post of this type
-	public static function registerMeta($post_id) {
-		add_post_meta($post_id, 'address', '', true);
-        add_post_meta($post_id, 'address2', '', true);
-        add_post_meta($post_id, 'city', '', true);
-        add_post_meta($post_id, 'state', '', true);
-        add_post_meta($post_id, 'zip', '', true);
-        add_post_meta($post_id, 'phone', '', true);
-        add_post_meta($post_id, 'latitude', '', true);
-        add_post_meta($post_id, 'longitude', '', true);
-	}
+    // Register the meta box to add to the Post edit page, and define the html callback
+    public static function add_meta_box() {
+        add_meta_box(
+            'location_meta',            // Unique ID
+            'Properties',               // Box title
+            [self::class, 'meta_html'], // Content callback, must be of type callable
+            "location"                  // Post type
+        );
+    }
+
+    // Callback to display the HTML for this meta box
+    function meta_html($post)
+    {
+        $view = new Xby2BaseView(get_post_meta($post->ID));
+
+        $view->addInput('text', 'location-address',   'Address: ',         'address',   'large-text');
+        $view->addInput('text', 'location-address-2', 'Address 2: ',       'address2',  'large-text');
+        $view->addInput('text', 'location-city',      'City: ',            'city',      'regular-text');
+        $view->addInput('text', 'location-latitude',  'Latitude: ',        'latitude',  'regular-text');
+        $view->addInput('text', 'location-longitude', 'Longitude: ',       'longitude', 'regular-text');
+        $view->addInput('text', 'location-phone',     'Phone #: ',         'phone',     'regular-text');
+        $view->addInput('text', 'location-state',     'State/Province: ',  'state',     'regular-text');
+        $view->addInput('text', 'location-zip',       'ZIP/Postal Code: ', 'zip',       'regular-text');
+
+        $view->displayForm();
+    }
+
+    // Callback function to save the metadata when saving/updating the post
+    public static function save_meta_data($post_id) {
+        $standardMetaValues = array("address", "address2", "city", "latitude", "longitude", "phone", "state", "zip");
+        parent::save_standard_meta_values($standardMetaValues, $post_id);
+    }
 }

@@ -22,8 +22,8 @@ class Service extends Xby2BaseModel {
         // Get the data we need from our custom fields
         foreach ($post->meta as $key=>$value) {
             if ( property_exists ( $this , $key ) ) {
-                if ($key == "points"){
-                    $this->$key = $this->getPointsArray($value[0]);
+                if ($key == "points") {
+                    $this->$key = unserialize($value[0]);
                 } else {
                     $this->$key = $value[0];
                 }
@@ -38,7 +38,7 @@ class Service extends Xby2BaseModel {
             'plural_name'   => 'Services',
             'singular_name' => 'Service',
             'dashicon'      => 'dashicons-chart-area',
-            'supports'      => array( 'title', 'editor', 'custom-fields' ),
+            'supports'      => array( 'title', 'editor' ),
             'post_type'     => 'service'
         );
 
@@ -48,10 +48,55 @@ class Service extends Xby2BaseModel {
 		$controller->register_routes();
 	}
 
-    // Add all custom post meta fields when creating a new post of this type
-	public static function registerMeta($post_id) {
-		add_post_meta($post_id, 'points',        '', true);
-		add_post_meta($post_id, 'clientStoryId', '', true);
-        add_post_meta($post_id, 'imageUrl', '', true);
-	}
+    // Register the meta box to add to the Post edit page, and define the html callback
+    public static function add_meta_box() {
+        add_meta_box(
+            'service_meta',             // Unique ID
+            'Properties',               // Box title
+            [self::class, 'meta_html'], // Content callback, must be of type callable
+            "service"                   // Post type
+        );
+    }
+
+    // Callback to display the HTML for this meta box
+    function meta_html($post)
+    {
+        $view = new Xby2BaseView(get_post_meta($post->ID));
+
+        $clientStories = get_posts(['post_type' => 'clientstory', 'numberposts' => -1]);
+
+        $view->addInput('dropdown', 'service-client-story', 'Client Story: ',      'clientStoryId', '', $clientStories);
+        $view->addInput('text',     'service-image-url',    'Service Image Url: ', 'imageUrl',      'large-text');
+
+        // Pass the existing values array if it exists
+        if (is_array(unserialize($view->meta['points'][0]))) {
+            $view->addInput('textList', 'service-points', 'Points: ', 'points', 'regular-text', unserialize($view->meta['points'][0]));
+        } else {
+            $view->addInput('textList', 'service-points', 'Points: ', 'points', 'regular-text', []);
+        }
+
+        $view->displayForm('service');
+    }
+
+    // Callback function to save the metadata when saving/updating the post
+    public static function save_meta_data($post_id)
+    {
+        $standardMetaValues = array("clientStoryId", "imageUrl");
+        parent::save_standard_meta_values($standardMetaValues, $post_id);
+
+        // Iterate points, remove the empty ones, and save the remaining
+        if (array_key_exists('points', $_POST)) {
+            $points = $_POST['points'];
+            foreach ($points as $key=>$point) {
+                if (strlen($point) == 0) {
+                    unset($points[$key]);
+                }
+            }
+            update_post_meta(
+                $post_id,
+                'points',
+                $points
+            );
+        }
+    }
 }

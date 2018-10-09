@@ -28,7 +28,7 @@ class ClientStory extends Xby2BaseModel {
         foreach ($post->meta as $key=>$value) {
             if ( property_exists ( $this , $key ) ) {
                 if ($key == "expertises") {
-                    $this->$key = $this->getServicesArray($value[0]);
+                    $this->$key = $this->getServicesArray(unserialize($value[0]));
                 // Cast isFeatured as a boolean
                 } else if ($key == "isFeatured") {
                     $this->$key = filter_var($value[0], FILTER_VALIDATE_BOOLEAN);
@@ -62,7 +62,7 @@ class ClientStory extends Xby2BaseModel {
             'plural_name'   => 'Client Stories',
             'singular_name' => 'Client Story',
             'dashicon'      => 'dashicons-welcome-widgets-menus',
-            'supports'      => array( 'title', 'editor', 'custom-fields' ),
+            'supports'      => array( 'title', 'editor' ),
             'post_type'     => 'clientstory'
         );
 
@@ -72,24 +72,53 @@ class ClientStory extends Xby2BaseModel {
 		$controller->register_routes();
 	}
 
-	// Add all custom post meta fields when creating a new post of this type
-	public static function registerMeta($post_id) {
-		add_post_meta($post_id, 'imageUrl',          '', true);
-        add_post_meta($post_id, 'listingImageUrl',   '', true);
-		add_post_meta($post_id, 'description',       '', true);
-		add_post_meta($post_id, 'industry',          '', true);
-		add_post_meta($post_id, 'client',            '', true);
-		add_post_meta($post_id, 'expertises',        '', true);
-        add_post_meta($post_id, 'isFeatured',        '', true);
-        add_post_meta($post_id, 'nextClientStoryId', '', true);
-	}
+    // Register the meta box to add to the Post edit page, and define the html callback
+    public static function add_meta_box() {
+        add_meta_box(
+            'client_story_meta',        // Unique ID
+            'Properties',               // Box title
+            [self::class, 'meta_html'], // Content callback, must be of type callable
+            "clientstory"               // Post type
+        );
+    }
+
+    // Callback to display the HTML for this meta box
+    function meta_html($post)
+    {
+        $view = new Xby2BaseView(get_post_meta($post->ID));
+
+        $industries    = get_posts(['post_type' => 'industry', 'numberposts' => -1]);
+        $services      = get_posts(['post_type' => 'service', 'numberposts' => -1]);
+        $clientStories = get_posts(['post_type' => 'clientstory', 'numberposts' => -1]);
+
+        $view->addInput('text',         'client-story-client',            'Client: ',            'client',            'regular-text');
+        $view->addInput('text',         'client-story-description',       'Description: ',       'description',       'large-text', [], true);
+        $view->addInput('text',         'client-story-listing-image-url', 'Listing Image Url: ', 'listingImageUrl',   'large-text');
+        $view->addInput('text',         'client-story-image-url',         'Image Url: ',         'imageUrl',          'large-text');
+        $view->addInput('dropdown',     'client-story-industry',          'Industry: ',          'industry',          'regular-text', $industries);
+        $view->addInput('dropdown',     'client-story-next-client-story', 'Next Client Story: ', 'nextClientStoryId', 'regular-text', $clientStories);
+        $view->addInput('checkboxList', 'client-story-services',          'Services: ',          'expertises',        'regular-text', $services);
+        $view->addInput('checkbox',     'client-story-featured',          'Featured (Y/N): ',    'isFeatured',        '');
+        $view->displayForm();
+
+    }
+
+    // Callback function to save the metadata when saving/updating the post
+    public static function save_meta_data($post_id)
+    {
+        $standardMetaValues  = array("client", "description", "expertises", "imageUrl", "industry", "listingImageUrl", "nextClientStoryId" );
+        parent::save_standard_meta_values($standardMetaValues, $post_id);
+
+        // Update Checkbox value
+        update_post_meta(
+            $post_id,
+            'isFeatured',
+            (array_key_exists('isFeatured', $_POST)) ? TRUE : FALSE
+        );
+    }
 
 	// Iterate Service Id's, store all their names in array
-	public function getServicesArray ($idList) {
-        $idArray = explode("\r\n", $idList);
-        if ($idArray[0] == "") {
-            array_shift($idArray);
-        }
+	public function getServicesArray ($idArray) {
         $titles = [];
         foreach($idArray as $serviceId) {
             $servicePost = get_post($serviceId);
