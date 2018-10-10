@@ -93,8 +93,8 @@ class ClientStory extends Xby2BaseModel {
 
         $view->addInput('text',         'client-story-client',            'Client: ',            'client',            'regular-text');
         $view->addInput('text',         'client-story-description',       'Description: ',       'description',       'large-text', [], true);
-        $view->addInput('text',         'client-story-listing-image-url', 'Listing Image Url: ', 'listingImageUrl',   'large-text');
-        $view->addInput('text',         'client-story-image-url',         'Image Url: ',         'imageUrl',          'large-text');
+        $view->addInput('imageSelect',  'client-story-listing-image-url', 'Listing Image Url: ', 'listingImageUrl',   'large-text');
+        $view->addInput('imageSelect',  'client-story-image-url',         'Image Url: ',         'imageUrl',          'large-text');
         $view->addInput('dropdown',     'client-story-industry',          'Industry: ',          'industry',          'regular-text', $industries);
         $view->addInput('dropdown',     'client-story-next-client-story', 'Next Client Story: ', 'nextClientStoryId', 'regular-text', $clientStories);
         $view->addInput('checkboxList', 'client-story-services',          'Services: ',          'expertises',        'regular-text', $services);

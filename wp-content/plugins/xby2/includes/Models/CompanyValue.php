@@ -57,7 +57,7 @@ class CompanyValue extends Xby2BaseModel {
     function meta_html($post)
     {
         $view = new Xby2BaseView(get_post_meta($post->ID));
-        $view->addInput('text', 'company-value-icon-url', 'Icon Url: ', 'iconUrl', 'large-text');
+        $view->addInput('imageSelect', 'company-value-icon-url', 'Icon Url: ', 'iconUrl', 'large-text');
         $view->displayForm();
     }
 

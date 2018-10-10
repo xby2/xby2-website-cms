@@ -58,7 +58,7 @@ class Perk extends Xby2BaseModel {
     {
         $view = new Xby2BaseView(get_post_meta($post->ID));
 
-        $view->addInput('text', 'perk-icon-url', 'Icon Url: ', 'iconUrl', 'large-text');
+        $view->addInput('imageSelect', 'perk-icon-url', 'Icon Url: ', 'iconUrl', 'large-text');
 
         $view->displayForm();
     }

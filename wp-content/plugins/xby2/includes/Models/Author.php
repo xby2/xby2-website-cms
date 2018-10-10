@@ -56,8 +56,8 @@ class Author extends Xby2BaseModel {
     function meta_html($post)
     {
         $view = new Xby2BaseView(get_post_meta($post->ID));
-        $view->addInput('text', 'author-image-url', 'Author Image Url: ', 'imageUrl', 'large-text');
-        $view->addInput('text', 'author-title',     'Author Title: ',     'title',    'regular-text');
+        $view->addInput('imageSelect', 'author-image-url', 'Author Image Url: ', 'imageUrl', 'large-text');
+        $view->addInput('text',        'author-title',     'Author Title: ',     'title',    'regular-text');
         $view->displayForm();
     }
 
