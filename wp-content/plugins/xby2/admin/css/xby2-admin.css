@@ -3,6 +3,10 @@
  * included in this file.
  */
 
+.select-media-button {
+	margin-top: 4px !important;
+}
+
 #postcustomstuff p,
 #newmeta {
 	display: none;

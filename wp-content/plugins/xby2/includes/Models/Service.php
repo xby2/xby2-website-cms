@@ -65,8 +65,8 @@ class Service extends Xby2BaseModel {
 
         $clientStories = get_posts(['post_type' => 'clientstory', 'numberposts' => -1]);
 
-        $view->addInput('dropdown', 'service-client-story', 'Client Story: ',      'clientStoryId', '', $clientStories);
-        $view->addInput('text',     'service-image-url',    'Service Image Url: ', 'imageUrl',      'large-text');
+        $view->addInput('dropdown',    'service-client-story', 'Client Story: ',      'clientStoryId', '', $clientStories);
+        $view->addInput('imageSelect', 'service-image-url',    'Service Image Url: ', 'imageUrl',      'large-text');
 
         // Pass the existing values array if it exists
         if (is_array(unserialize($view->meta['points'][0]))) {

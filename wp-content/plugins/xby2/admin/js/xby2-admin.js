@@ -83,6 +83,50 @@
                 characterCountSpan.html(180 - input.val().length);
             });
 		}
+
+		// Custom media upload/selection in the Post Meta Box
+        // Allows the user to find/select a media item without leaving the page
+        let custom_uploader;
+        $('.select-media-button').on('click', function(e) {
+            
+        	e.preventDefault();
+        	
+        	let mediaButton = $(this);
+
+        	// Get the input associated with the button
+            let input = mediaButton.siblings('input');
+
+            //If the uploader object has already been created, reopen the dialog
+            if (custom_uploader) {
+
+            	// Remove the old listener and register with the chosen button (Needed when multiple media buttons on page)
+            	custom_uploader.off('select');
+                custom_uploader.on('select', function () {
+                    let attachment = custom_uploader.state().get('selection').first().toJSON();
+                    input.val(attachment.url);
+                });
+                custom_uploader.open();
+                return;
+            }
+
+            //Extend the wp.media object
+            custom_uploader = wp.media.frames.file_frame = wp.media({
+                title: 'Choose Image',
+                button: {
+                    text: 'Select'
+                },
+                multiple: false
+            });
+
+            //When a file is selected, grab the URL and set it as the text field's value
+            custom_uploader.on('select', function () {
+                let attachment = custom_uploader.state().get('selection').first().toJSON();
+                input.val(attachment.url);
+            });
+
+            //Open the uploader dialog
+            custom_uploader.open();
+        });
     });
 
 })( jQuery );

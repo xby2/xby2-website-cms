@@ -102,6 +102,28 @@ Class Xby2BaseView {
     }
 
     /**
+     * Text input with a button to open the Media viewer to select an image
+     * @param $data
+     */
+    public function imageSelect($data)
+    {
+        extract($data);
+        ?>
+        <tr class="<?=$id?>-row">
+            <th scope="row">
+                <label for="<?=$id?>"><?=$label?></label>
+            </th>
+            <td>
+                <input id="<?=$id?>" class="<?=$class?>" name="<?=$name?>"
+                    <?php if(isset($this->meta[$name])) { echo 'value="'.$this->meta[$name][0].'"'; } ?>
+                >
+                <button id="<?=$id?>-media-button" type="button" class="button button-default select-media-button">Select Image</button>
+            </td>
+        </tr>
+        <?php
+    }
+
+    /**
      * Checkbox input
      * @param $data
      */
