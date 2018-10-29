@@ -186,14 +186,25 @@ Class Xby2BaseView {
             </th>
             <td>
                 <select id="<?=$id?>" name="<?=$name?>" class="<?=$class?>">
-                    <?php foreach($dropdownArray as $key=>$post): ?>
-                        <option value="<?php echo $post->ID ?>"
-                            <?php if (isset($this->meta[$name][0]) && (int)$this->meta[$name][0] == $post->ID) {
-                                echo 'selected';
-                            } ?>
-                        >
-                            <?php echo ucfirst($post->post_title)?>
-                        </option>
+                    <?php foreach($dropdownArray as $key=>$value): ?>
+                        <?php if (is_object($value)) :?>
+                            <option value="<?php echo $value->ID ?>"
+                                <?php if (isset($this->meta[$name][0]) && (int)$this->meta[$name][0] == $value->ID) {
+                                    echo 'selected';
+                                } ?>
+                            >
+                                <?php echo ucfirst($value->post_title)?>
+                            </option>
+                        <?php else: ?>
+                            <option value="<?php echo $value ?>"
+                                <?php if (isset($this->meta[$name][0]) && (int)$this->meta[$name][0] == $value) {
+                                    echo 'selected';
+                                } ?>
+                            >
+                                <?php echo ($value)?>
+                            </option>
+                        <?php endif; ?>
+
                     <?php endforeach; ?>
                 </select>
             </td>

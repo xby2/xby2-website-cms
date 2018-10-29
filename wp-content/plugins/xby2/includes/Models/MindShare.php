@@ -110,6 +110,9 @@ Class MindShare extends Xby2BaseModel {
         $industries = get_posts(['post_type' => 'industry', 'numberposts' => -1]);
         $mindShares = get_posts(['post_type' => 'mindshare', 'numberposts' => -1]);
 
+        // Options for the Read Time dropdown menu
+        $readTimes  = [ 5, 10, 15, 20, 25, 30];
+
         $view->addInput('dropdown', 'mind-share-author',       'Author: ',                  'authorId',          'regular-text', $authors);
         $view->addInput('dropdown', 'mind-share-industry',     'Industry: ',                'industry',          'regular-text', $industries);
         $view->addInput('dropdown', 'mind-share-mindshare',    'Next Mind Share: ',         'nextMindShareId',   'regular-text', $mindShares);
@@ -117,7 +120,7 @@ Class MindShare extends Xby2BaseModel {
         $view->addInput('text',     'mind-share-publish-date', 'Publish Date (MM/DD/YYYY)', 'publishDate',       'regular-text');
         $view->addInput('text',     'mind-share-publish-name', 'Publish Name',              'publishName',       'regular-text');
         $view->addInput('text',     'mind-share-publish-url',  'Publish Url',               'publishUrl',        'regular-text');
-        $view->addInput('text',     'mind-share-read-time',    'Read Time (Minutes)',       'readTimeInMinutes', 'regular-text');
+        $view->addInput('dropdown', 'mind-share-read-time',    'Read Time (Minutes)',       'readTimeInMinutes', 'regular-text', $readTimes);
         $view->addInput('text',     'mind-share-description',  'Short Description',         'shortDescription',  'large-text', [], true);
 
         $view->displayForm();
