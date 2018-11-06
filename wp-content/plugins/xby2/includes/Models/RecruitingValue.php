@@ -33,9 +33,4 @@ class RecruitingValue extends Xby2BaseModel {
         $controller = new RecruitingValueController();
         $controller->register_routes();
     }
-
-    // Add all custom post meta fields when creating a new post of this type
-    public static function registerMeta($post) {
-
-    }
 }

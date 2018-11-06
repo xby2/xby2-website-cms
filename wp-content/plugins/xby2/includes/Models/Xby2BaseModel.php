@@ -11,8 +11,8 @@ Class Xby2BaseModel{
      *
      * @param $data
      */
-    public static function registerType($data) {
-
+    public static function registerType($data)
+    {
         // Set the labels, this variable is used in the $args array
         $labels = array(
             'name'               => __( $data['plural_name'] ),
@@ -45,17 +45,16 @@ Class Xby2BaseModel{
 
     }
 
-    /**
-     * Explode into an array on newline characters so that it may be iterated easily
-     *
-     * @param $string
-     * @return array
-     */
-    public function getPointsArray($string) {
-        $pointsArray = explode("\r\n", $string);
-        if ($pointsArray[0] == "") {
-            array_shift($pointsArray);
+    public static function save_standard_meta_values($metaValues, $post_id)
+    {
+        foreach ($metaValues as $metaValue){
+            if (array_key_exists($metaValue, $_POST)) {
+                update_post_meta(
+                    $post_id,
+                    $metaValue,
+                    $_POST[$metaValue]
+                );
+            }
         }
-        return $pointsArray;
     }
 }

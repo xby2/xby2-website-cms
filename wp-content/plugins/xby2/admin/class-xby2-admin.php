@@ -11,6 +11,7 @@ require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/Models/Perk.php'
 require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/Models/CompanyValue.php';
 require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/Models/Location.php';
 require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/Models/MindShare.php';
+require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/Models/Author.php';
 
 /**
  * The admin-specific functionality of the plugin.
@@ -108,6 +109,7 @@ class Xby2_Admin {
 		 * class.
 		 */
 
+        wp_enqueue_media();
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/xby2-admin.js', array( 'jquery' ), $this->version, false );
 
 	}
@@ -119,6 +121,7 @@ class Xby2_Admin {
 	public function init_classes(){
 
 	    // Register custom types
+	    Author                  ::registerTypeAndRoutes();
 		ClientStory             ::registerTypeAndRoutes();
 		Industry                ::registerTypeAndRoutes();
 		RecruitingValue         ::registerTypeAndRoutes();
@@ -132,28 +135,68 @@ class Xby2_Admin {
 	}
 
     /**
-     * 'wp_insert_post' hook callback
-     * Register the custom meta fields
+     * 'add_meta_boxes' hook callback
+     * Register the custom meta box for the post type
      *
-     * @param $post_id
+     * @param $post_type
      */
-	public function set_custom_fields($post_id){
-
-	    $post = get_post($post_id);
+	public function set_custom_fields($post_type){
 
 	    // When creating a new Post, register the meta fields
-	    switch ($post->post_type) {
-            case 'clientstory'     :ClientStory::registerMeta($post_id);             break;
-            case 'service'         :Service::registerMeta($post_id);                 break;
-            case 'faq'             :FrequentlyAskedQuestion::registerMeta($post_id); break;
-            case 'link'            :Link::registerMeta($post_id);                    break;
-            case 'perk'            :Perk::registerMeta($post_id);                    break;
-            case 'companyvalue'    :CompanyValue::registerMeta($post_id);            break;
-            case 'location'        :Location::registerMeta($post_id);                break;
-            case 'recruitingvalue' :RecruitingValue::registerMeta($post_id);         break;
-            case 'industry'        :Industry::registerMeta($post_id);                break;
-            case 'mindshare'       :MindShare::registerMeta($post_id);               break;
+	    switch ($post_type) {
+            case 'clientstory'     :ClientStory::add_meta_box();             break;
+            case 'service'         :Service::add_meta_box();                 break;
+            case 'faq'             :FrequentlyAskedQuestion::add_meta_box(); break;
+            case 'link'            :Link::add_meta_box();                    break;
+            case 'perk'            :Perk::add_meta_box();                    break;
+            case 'companyvalue'    :CompanyValue::add_meta_box();            break;
+            case 'location'        :Location::add_meta_box();                break;
+            case 'mindshare'       :MindShare::add_meta_box();               break;
+            case 'author'		   :Author::add_meta_box();					 break;
         }
 	}
+
+    /**
+     *
+     * @param int $post_id
+     * @param $post
+     */
+    public function save_post_meta($post_id, $post) {
+
+        switch ($post->post_type) {
+            case 'clientstory'     :ClientStory::save_meta_data($post_id);             break;
+            case 'service'         :Service::save_meta_data($post_id);                 break;
+            case 'faq'             :FrequentlyAskedQuestion::save_meta_data($post_id); break;
+            case 'link'            :Link::save_meta_data($post_id);                    break;
+            case 'perk'            :Perk::save_meta_data($post_id);                    break;
+            case 'companyvalue'    :CompanyValue::save_meta_data($post_id);            break;
+            case 'location'        :Location::save_meta_data($post_id);                break;
+            case 'mindshare'       :MindShare::save_meta_data($post_id);               break;
+            case 'author'		   :Author::save_meta_data($post_id);                  break;
+        }
+    }
+
+    /**
+     * 'admin_menu' hook callback
+     * Remove menu items
+     */
+	public function remove_admin_menu_items(){
+		remove_menu_page( 'edit.php' );                //Posts
+		remove_menu_page( 'edit.php?post_type=page' ); //Pages
+		remove_menu_page( 'edit-comments.php' );       //Comments
+	}
+
+    /**
+     * 'upload_mimes' hook callback
+     * Allow SVG uploads
+     *
+     * @param $allowed_mimes
+     * @return array
+     */
+	public function allow_svg_uploads( $allowed_mimes ){
+        $allowed_mimes['svg'] = 'image/svg+xml';
+        $allowed_mimes['svgz'] = 'image/svg+xml';
+        return $allowed_mimes;
+    }
 
 }

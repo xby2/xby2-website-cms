@@ -30,9 +30,4 @@ class Industry extends Xby2BaseModel {
         $controller = new IndustryController();
         $controller->register_routes();
     }
-
-    // Add all custom post meta fields when creating a new post of this type
-    public static function registerMeta($post_id) {
-
-    }
 }

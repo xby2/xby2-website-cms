@@ -33,7 +33,7 @@ class CompanyValue extends Xby2BaseModel {
             'plural_name'   => 'Company Values',
             'singular_name' => 'Company Value',
             'dashicon'      => 'dashicons-slides',
-            'supports'      => array( 'title', 'editor', 'custom-fields' ),
+            'supports'      => array( 'title', 'editor' ),
             'post_type'     => 'companyvalue'
         );
 
@@ -43,8 +43,27 @@ class CompanyValue extends Xby2BaseModel {
         $controller->register_routes();
     }
 
-    // Add all custom post meta fields when creating a new post of this type
-    public static function registerMeta($post_id) {
-        add_post_meta($post_id, 'iconUrl', '', true);
+    // Register the meta box to add to the Post edit page, and define the html callback
+    public static function add_meta_box() {
+        add_meta_box(
+            'company_value_meta',        // Unique ID
+            'Properties',                // Box title
+            [self::class, 'meta_html'],  // Content callback, must be of type callable
+            "companyvalue"               // Post type
+        );
+    }
+
+    // Callback to display the HTML for this meta box
+    function meta_html($post)
+    {
+        $view = new Xby2BaseView(get_post_meta($post->ID));
+        $view->addInput('imageSelect', 'company-value-icon-url', 'Icon Url: ', 'iconUrl', 'large-text');
+        $view->displayForm();
+    }
+
+    // Callback function to save the metadata when saving/updating the post
+    public static function save_meta_data($post_id) {
+        $standardMetaValues = array("iconUrl");
+        parent::save_standard_meta_values($standardMetaValues, $post_id);
     }
 }
