@@ -29,7 +29,7 @@ Class MindShare extends Xby2BaseModel {
         $this->title = $post->post_title;
         $this->content = apply_filters('the_content', $post->post_content);
 
-        $tags = get_the_tags($this->id);
+        $tags = get_the_tags($post->ID);
         if ($tags){
             foreach ($tags as $tag) {
                 $this->tags[] = $tag->name;
