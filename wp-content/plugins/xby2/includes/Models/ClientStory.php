@@ -20,7 +20,7 @@ class ClientStory extends Xby2BaseModel {
 
     public function __construct($post, $findNextClientStory = true) {
         // Get the data we need from the post
-        $this->id = $post->ID;
+        $this->id = (isset($post->meta['slug'][0])) ? $post->meta['slug'][0] : $post->ID;
         $this->title = $post->post_title;
         $this->content = apply_filters('the_content', $post->post_content);
 
@@ -39,7 +39,7 @@ class ClientStory extends Xby2BaseModel {
                         $meta = get_post_meta($clientStoryPost->ID);
                         $clientStoryPost->meta = $meta;
                         $clientStory = new ClientStory($clientStoryPost, false);
-                        $this->nextClientStoryId = $clientStoryPost->ID;
+                        $this->nextClientStoryId = $clientStory->id;
                         $this->nextClientStoryDescription = $clientStory->description;
                         $this->nextClientStoryTitle = $clientStory->title;
                     }
@@ -99,6 +99,7 @@ class ClientStory extends Xby2BaseModel {
         $view->addInput('dropdown',     'client-story-next-client-story', 'Next Client Story: ', 'nextClientStoryId', 'regular-text', $clientStories);
         $view->addInput('checkboxList', 'client-story-services',          'Services: ',          'expertises',        'regular-text', $services);
         $view->addInput('checkbox',     'client-story-featured',          'Featured (Y/N): ',    'isFeatured',        '');
+        $view->addInput('text',         'client-story-slug',              'URL Slug: ',          'slug',              'regular-text');
         $view->displayForm();
 
     }
@@ -106,7 +107,7 @@ class ClientStory extends Xby2BaseModel {
     // Callback function to save the metadata when saving/updating the post
     public static function save_meta_data($post_id)
     {
-        $standardMetaValues  = array("client", "description", "expertises", "imageUrl", "industry", "listingImageUrl", "nextClientStoryId" );
+        $standardMetaValues  = array("client", "description", "expertises", "imageUrl", "industry", "listingImageUrl", "nextClientStoryId", "slug" );
         parent::save_standard_meta_values($standardMetaValues, $post_id);
 
         // Update Checkbox value

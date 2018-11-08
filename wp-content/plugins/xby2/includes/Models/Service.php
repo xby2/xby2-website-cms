@@ -24,7 +24,14 @@ class Service extends Xby2BaseModel {
             if ( property_exists ( $this , $key ) ) {
                 if ($key == "points") {
                     $this->$key = unserialize($value[0]);
-                } else {
+                } else if ($key == "clientStoryId") {
+                    $clientStoryPost = get_post($value[0]);
+                    if ($clientStoryPost) {
+                        $meta = get_post_meta($clientStoryPost->ID);
+                        $this->clientStoryId = (isset($meta['slug'][0])) ? $meta['slug'][0] : $clientStoryPost->ID;
+                    }
+                }
+                else {
                     $this->$key = $value[0];
                 }
             }
