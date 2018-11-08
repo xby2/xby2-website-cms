@@ -57,7 +57,7 @@ Class MindShare extends Xby2BaseModel {
                     $mindSharePost = get_post($value[0]);
                     if ($mindSharePost) {
                         $meta = get_post_meta($mindSharePost->ID);
-                        $this->nextMindShareId = (isset($meta['slug'][0])) ? $meta['slug'][0] : $post->ID;
+                        $this->nextMindShareId = (isset($meta['slug'][0])) ? $meta['slug'][0] : $mindSharePost->ID;
                         $this->nextMindShareTitle = $mindSharePost->post_title;
                     }
                 } else if ($key == "industry") {
