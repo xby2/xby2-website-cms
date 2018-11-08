@@ -25,7 +25,7 @@ Class MindShare extends Xby2BaseModel {
 
     public function __construct($post) {
 
-        $this->id = $post->ID;
+        $this->id = (isset($post->meta['slug'][0])) ? $post->meta['slug'][0] : $post->ID;
         $this->title = $post->post_title;
         $this->content = apply_filters('the_content', $post->post_content);
 
@@ -56,7 +56,8 @@ Class MindShare extends Xby2BaseModel {
                 } else if ($key == "nextMindShareId") {
                     $mindSharePost = get_post($value[0]);
                     if ($mindSharePost) {
-                        $this->nextMindShareId = $value[0];
+                        $meta = get_post_meta($mindSharePost->ID);
+                        $this->nextMindShareId = (isset($meta['slug'][0])) ? $meta['slug'][0] : $mindSharePost->ID;
                         $this->nextMindShareTitle = $mindSharePost->post_title;
                     }
                 } else if ($key == "industry") {
@@ -122,13 +123,14 @@ Class MindShare extends Xby2BaseModel {
         $view->addInput('text',     'mind-share-publish-url',  'Publish Url',               'publishUrl',        'regular-text');
         $view->addInput('dropdown', 'mind-share-read-time',    'Read Time (Minutes)',       'readTimeInMinutes', 'regular-text', $readTimes);
         $view->addInput('text',     'mind-share-description',  'Short Description',         'shortDescription',  'large-text', [], true);
+        $view->addInput('text',     'client-story-slug',       'URL Slug: ',                'slug',              'regular-text');
 
         $view->displayForm();
     }
 
     // Callback function to save the metadata when saving/updating the post
     public static function save_meta_data($post_id) {
-        $standardMetaValues = array("authorId", "industry", "nextMindShareId", "publishDate", "publishName", "publishUrl", "readTimeInMinutes", "shortDescription");
+        $standardMetaValues = array("authorId", "industry", "nextMindShareId", "publishDate", "publishName", "publishUrl", "readTimeInMinutes", "shortDescription", "slug");
         parent::save_standard_meta_values($standardMetaValues, $post_id);
 
         // Update Checkbox value
