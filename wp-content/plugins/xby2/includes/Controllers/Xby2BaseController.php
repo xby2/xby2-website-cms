@@ -43,6 +43,11 @@ Class Xby2BaseController {
         try {
             $data = array();
 
+            // Try to get this response data from the cache
+            if ( $data = get_transient($this->post_type . '-api-cache') ) {
+                return new WP_REST_Response( $data, 200 );
+            }
+
             // Get all posts of this post type
             $items = get_posts([
                 'post_type' => $this->post_type,
@@ -56,6 +61,9 @@ Class Xby2BaseController {
             }
 
             $data = $this->prepare_items_for_response($data, $request);
+
+            // Set cache, expire it in one week
+            set_transient( $this->post_type . '-api-cache' , $data, WEEK_IN_SECONDS);
 
             return new WP_REST_Response( $data, 200 );
         }
