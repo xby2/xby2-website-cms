@@ -174,6 +174,9 @@ class Xby2_Admin {
             case 'mindshare'       :MindShare::save_meta_data($post_id);               break;
             case 'author'		   :Author::save_meta_data($post_id);                  break;
         }
+
+        // Delete after saving, cache will repopulate after first request to get that post type
+        delete_transient($post->post_type . '-api-cache');
     }
 
     /**
