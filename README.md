@@ -1,4 +1,4 @@
-[![Build status](https://dev.azure.com/xby2/website/_apis/build/status/website-cms-prod-CI)](https://dev.azure.com/xby2/website/_build/latest?definitionId=-1)
+[![Build status](https://dev.azure.com/xby2/website/_apis/build/status/website-cms-CI)](https://dev.azure.com/xby2/website/_build/latest?definitionId=10)
 
 # xby2-website-cms
 
@@ -8,7 +8,7 @@ The CMS used for the X by 2 website.
 
 ### Requirements
 
-* LAMP Server([download](http://www.wampserver.com/en/)).
+- LAMP Server([download](http://www.wampserver.com/en/)).
 
 ### Importing Database
 
@@ -21,10 +21,10 @@ The CMS used for the X by 2 website.
 INSERT INTO `wp_users` (`user_login`, `user_pass`, `user_nicename`, `user_email`, `user_status`)
 VALUES ('YOUR_USERNAME', MD5('YOUR_PASSWORD'), 'FIRSTNAME LASTNAME', 'EMAIL@EXAMPLE.COM', '0');
 
-INSERT INTO `wp_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`) 
+INSERT INTO `wp_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`)
 VALUES (NULL, (Select max(id) FROM wp_users), 'wp_capabilities', 'a:1:{s:13:"administrator";s:1:"1";}');
 
-INSERT INTO `wp_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`) 
+INSERT INTO `wp_usermeta` (`umeta_id`, `user_id`, `meta_key`, `meta_value`)
 VALUES (NULL, (Select max(id) FROM wp_users), 'wp_user_level', '10');
 ```
 
