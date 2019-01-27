@@ -34,4 +34,4 @@ VALUES (NULL, (Select max(id) FROM wp_users), 'wp_user_level', '10');
 1. Using Admin cmd, create a symlink between the destination web server and your source code repo folder (`mklink /D TARGET SOURCE`). Example: `mklink /D c:\wamp64\www\xby2-website-cms d:\code\xby2-website-cms`
 1. Access the WordPress instance using localhost. (http://localhost/xby2-website-cms)
 1. Run through the 5-minute install, using the newly created database.
-1. Log in while bypassing SSO configuration: (http://localhost/xby2-website-cms/wp-login.php?saml_sso=false).
+1. Log in while bypassing MiniOrange SSO configuration: (http://localhost/xby2-website-cms/wp-login.php?saml_sso=false).
